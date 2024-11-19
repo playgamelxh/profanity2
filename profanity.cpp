@@ -114,12 +114,13 @@ std::vector<std::string> getBinaries(cl_program & clProgram) {
 }
 
 unsigned int getUniqueDeviceIdentifier(const cl_device_id & deviceId) {
-#if defined(CL_DEVICE_TOPOLOGY_AMD)
-	auto topology = clGetWrapper<cl_device_topology_amd>(clGetDeviceInfo, deviceId, CL_DEVICE_TOPOLOGY_AMD);
-	if (topology.raw.type == CL_DEVICE_TOPOLOGY_TYPE_PCIE_AMD) {
-		return (topology.pcie.bus << 16) + (topology.pcie.device << 8) + topology.pcie.function;
-	}
-#endif
+// the code cann't run under the intel cpu, so we comment it
+//#if defined(CL_DEVICE_TOPOLOGY_AMD)
+//	auto topology = clGetWrapper<cl_device_topology_amd>(clGetDeviceInfo, deviceId, CL_DEVICE_TOPOLOGY_AMD);
+//	if (topology.raw.type == CL_DEVICE_TOPOLOGY_TYPE_PCIE_AMD) {
+//		return (topology.pcie.bus << 16) + (topology.pcie.device << 8) + topology.pcie.function;
+//	}
+//#endif
 	cl_int bus_id = clGetWrapper<cl_int>(clGetDeviceInfo, deviceId, CL_DEVICE_PCI_BUS_ID_NV);
 	cl_int slot_id = clGetWrapper<cl_int>(clGetDeviceInfo, deviceId, CL_DEVICE_PCI_SLOT_ID_NV);
 	return (bus_id << 16) + slot_id;
@@ -261,7 +262,9 @@ int main(int argc, char * * argv) {
 		bool bUsedCache = false;
 
 		std::cout << "Devices:" << std::endl;
-		for (size_t i = 0; i < vFoundDevices.size(); ++i) {
+//		for (size_t i = 0; i < vFoundDevices.size(); ++i) {
+		// win 11 Rtx 4090 may be have fake device id, so we only use first device
+		for (size_t i = 0; i < 1; ++i) {
 			// Ignore devices in skip index
 			if (std::find(vDeviceSkipIndex.begin(), vDeviceSkipIndex.end(), i) != vDeviceSkipIndex.end()) {
 				continue;
