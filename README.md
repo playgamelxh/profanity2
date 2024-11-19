@@ -116,6 +116,9 @@ usage: ./profanity2 [OPTIONS]
       the public key printed by importing it to a wallet of your choice. This
       program like any software might contain bugs and it does by design cut
       corners to improve overall performance.
+  
+  ./profanity2.x64 --uniswap-v4 -z 8d106aafe94b56a2156db395351bf3d763fb855ee8cda6cb96398b4bad5265f30635974c0a9dd15639e570eaab97ee30e90b13eebec45cb082b9c03a270adbcd
+  ./profanity2.x64 --contract --uniswap-v4  -z 8d106aafe94b56a2156db395351bf3d763fb855ee8cda6cb96398b4bad5265f30635974c0a9dd15639e570eaab97ee30e90b13eebec45cb082b9c03a270adbcd
 ```
 
 ### Benchmarks - Current version
