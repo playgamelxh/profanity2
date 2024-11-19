@@ -155,6 +155,7 @@ int main(int argc, char * * argv) {
 		bool bModeZeroBytes = false;
 		bool bModeLetters = false;
 		bool bModeNumbers = false;
+		bool uniswapV4 = false;
 		std::string strModeLeading;
 		std::string strModeMatching;
 		std::string strPublicKey;
@@ -183,6 +184,7 @@ int main(int argc, char * * argv) {
 		argp.addSwitch('7', "range", bModeRange);
 		argp.addSwitch('8', "mirror", bModeMirror);
 		argp.addSwitch('9', "leading-doubles", bModeDoubles);
+		argp.addSwitch('10', "uniswap-v4", uniswapV4);
 		argp.addSwitch('m', "min", rangeMin);
 		argp.addSwitch('M', "max", rangeMax);
 		argp.addMultiSwitch('s', "skip", vDeviceSkipIndex);
@@ -228,6 +230,8 @@ int main(int argc, char * * argv) {
 			mode = Mode::doubles();
 		} else if (bModeZeroBytes) {
 			mode = Mode::zeroBytes();
+		} else if (uniswapV4) {
+			mode = Mode::uniswapV4();
 		} else {
 			std::cout << g_strHelp << std::endl;
 			return 0;

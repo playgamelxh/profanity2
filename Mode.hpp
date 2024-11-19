@@ -32,6 +32,7 @@ class Mode {
 		static Mode letters();
 		static Mode numbers();
 		static Mode doubles();
+		static Mode uniswapV4();
 
 		std::string name;
 

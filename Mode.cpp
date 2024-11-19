@@ -147,3 +147,10 @@ Mode Mode::doubles() {
 	r.kernel = "profanity_score_doubles";
 	return r;
 }
+
+Mode Mode::uniswapV4() {
+	Mode r = range(0, 15);
+	r.name = "uniswapV4";
+	r.kernel = "uniswap_v4";
+	return r;
+}

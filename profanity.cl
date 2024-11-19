@@ -869,3 +869,66 @@ __kernel void profanity_score_doubles(__global mp_number * const pInverse, __glo
 
 	profanity_result_update(id, hash, pResult, score, scoreMax);
 }
+
+__kernel void uniswap_v4(__global mp_number * const pInverse, __global result * const pResult, __constant const uchar * const data1, __constant const uchar * const data2, const uchar scoreMax) {
+	const size_t id = get_global_id(0);
+	__global const uchar * const hash = pInverse[id].d;
+	int score = 0;
+
+    int startingZeros = 1;
+    int startingFours = 1;
+    int firstFour = 1;
+    uchar fourCounts = 0;
+    int flag = 0;
+    for (int i = 0; i < 20; ++i) {
+        if (flag) {
+            break;
+        }
+        const uchar first = (hash[i] & 0xF0) >> 4;
+        const uchar second = (hash[i] & 0x0F);
+        for (int j=0; j<=1; j++) {
+            uchar current = j ? second : first;
+            // Leading zeros
+            if (startingZeros && current == 0) {
+                score += 10;
+                continue;
+            } else {
+                startingZeros = 0;
+            }
+            // Leading fours
+            if (startingFours) {
+                if (firstFour && current != 4) {
+                    score = 0; // auto reject
+                    flag = 1;
+                    break;
+                }
+                if (current == 4) {
+                    fourCounts++;
+                    if (fourCounts == 4) {
+                        score += 40;
+                        // if the last four bytes are 4, add 20 points
+                        if (i >= 16) {
+                            score += 20;
+                        }
+                    }
+                } else {
+                    if (fourCounts == 4) {
+                        score += 20; // if the last four bytes are 4, add 20 points
+                    }
+                    startingFours = 0;
+                }
+                firstFour = 0;
+            }
+            // every 4 is a point
+            if (current == 4) {
+                score += 1;
+            }
+        }
+    }
+    // check last four bytes
+    if (hash[18] == 0x44 && hash[19] == 0x44) {
+        score += 20;
+    }
+
+	profanity_result_update(id, hash, pResult, score, scoreMax);
+}
